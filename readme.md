@@ -1,13 +1,13 @@
-# Streaming version - show each worker live
-@app.post("/team/stream")
-async def run_team_stream(req: TeamRequest):
-    async def generate():
-        async for chunk in graph.astream(
-            {"topic": req.topic, "attempts": 0, "feedback": ""},
-            stream_mode="updates"
-        ):
-            # chunk looks like {"planner": {...}} or {"writer": {...}}
-            for worker_name in chunk:
-                yield f"data: {json.dumps({'worker': worker_name, 'output': str(chunk[worker_name])[:500]})}\n\n"
-        yield "data: [DONE]\n\n"
-    return StreamingResponse(generate(), media_type="text/event-stream")
+# Agent Team - Easy Version
+Planner + Researcher + Writer + Critic working together with LangGraph
+
+How it works:
+Planner makes a plan -> Researcher finds facts on Wikipedia -> Writer writes invitation -> Critic checks length + keyword -> If NEEDS FIX, back to Writer
+
+Run:
+uvicorn main_easy:app --reload --port 8002
+Docs: http://127.0.0.1:8002/docs
+
+Example:
+Topic: "Movie night for 5 friends, Friday, at home, horror movie"
+Result: Final invitation + attempts used
